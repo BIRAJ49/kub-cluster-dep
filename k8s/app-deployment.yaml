@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-blog
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: simple-blog
+  template:
+    metadata:
+      labels:
+        app: simple-blog
+    spec:
+      containers:
+        - name: simple-blog
+          image: biraj17/simple-blog:1   
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
