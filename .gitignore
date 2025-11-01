@@ -1,7 +1,17 @@
+# Node/Next.js build artifacts
 node_modules
 .next
-.env
-.env.local
-.DS_Store
+out
+
+# Logs
 npm-debug.log*
+yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+
+# Environment & runtime files
+.env*
+.vercel
+
+# MacOS metadata
+.DS_Store

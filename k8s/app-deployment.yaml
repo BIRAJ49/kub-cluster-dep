@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: simple-blog
-          image: biraj17/simple-blog:1   
+          image: biraj17/simple-blog1:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
