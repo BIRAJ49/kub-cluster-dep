@@ -1,68 +1,56 @@
-'use client';
-
 import Link from 'next/link';
-import { useEffect, useRef } from 'react';
-import { createPost } from './lib/posts';
-import { useFormState } from 'react-dom';
+import { getPosts } from './lib/posts';
 
-const initialState = { success: false, error: null, post: null };
+function formatDate(value) {
+  return new Date(value).toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
 
-export default function HomePage() {
-  const formRef = useRef(null);
-  const [state, formAction] = useFormState(createPost, initialState);
-
-  useEffect(() => {
-    if (state.success && formRef.current) {
-      formRef.current.reset();
-    }
-  }, [state.success]);
+export default async function HomePage() {
+  const { posts, error } = await getPosts();
 
   return (
     <section className="container grid">
-      <div className="card">
-        <h1 className="hero-title">Share your story</h1>
+      <div className="card" style={{ display: 'grid', gap: '1rem' }}>
+        <h1 className="hero-title">Your latest stories</h1>
         <p className="hero-subtitle">
-          Publish a new blog post and it will live forever on your blog page. Fill out the form
-          below with a title and your thoughts, then submit to save it to the database.
+          Catch up on everything you have published. Entries appear instantly after you save them,
+          so this feed is always up to date.
         </p>
-        <form ref={formRef} className="blog-form" action={formAction}>
-          <label>
-            <span>Title</span>
-            <input
-              className="input"
-              type="text"
-              name="title"
-              placeholder="Give your post a headline"
-              required
-            />
-          </label>
-          <label>
-            <span>Content</span>
-            <textarea
-              className="textarea"
-              name="content"
-              placeholder="Write your story here..."
-              required
-            />
-          </label>
-          <button className="button" type="submit">
-            Publish post
-          </button>
-        </form>
-        {state.error && (
-          <p className="status status-error" role="alert">
-            {state.error}
+        <div>
+          <Link className="button" href="/write">
+            Write a new post
+          </Link>
+        </div>
+      </div>
+
+      <div className="card" style={{ display: 'grid', gap: '1.5rem' }}>
+        <header>
+          <h2 style={{ margin: 0, fontSize: '1.5rem', color: '#1f2a44' }}>Recent posts</h2>
+          <p className="hero-subtitle" style={{ marginTop: '0.35rem' }}>
+            Browse the archive below. Need to edit or expand? Publish a fresh take from the write
+            page.
           </p>
-        )}
-        {state.success && (
-          <p className="status status-success" role="status">
-            Post published! Check it out on the <Link href="/blogs">blogs page</Link>.
-          </p>
-        )}
-        <p className="hero-subtitle" style={{ marginTop: '1rem' }}>
-          Want to see what you have written? Head over to the{' '}
-          <Link href="/blogs">blogs page</Link>.
-        </p>
+        </header>
+
+        <div className="post-list">
+          {error && <p className="status status-error">{error}</p>}
+          {!error && posts.length === 0 && (
+            <p className="muted">No posts yet. Head to the write page to share your first story.</p>
+          )}
+          {posts.map((post) => (
+            <article key={post.id} className="post-item">
+              <h3>{post.title}</h3>
+              <div className="post-meta">{formatDate(post.created_at)}</div>
+              <p>{post.content}</p>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
