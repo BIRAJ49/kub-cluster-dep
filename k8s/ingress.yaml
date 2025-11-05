@@ -1,7 +1,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: simple-blog
+  name: blog
+  labels:
+    app: blog
   annotations:
     kubernetes.io/ingress.class: nginx
 spec:
@@ -13,6 +15,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: simple-blog
+                name: blog
                 port:
                   number: 3000
